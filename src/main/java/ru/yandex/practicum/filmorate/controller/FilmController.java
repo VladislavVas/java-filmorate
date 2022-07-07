@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/films")
 public class FilmController {
 
-    FilmStorage filmStorage;
-    FilmService filmService;
+    private FilmStorage filmStorage;
+    private FilmService filmService;
 
     @Autowired
     public FilmController(FilmStorage filmStorage, FilmService filmService){
@@ -64,7 +64,7 @@ public class FilmController {
 
     @GetMapping("/popular")
     public Collection<Film> getPopularFilms(
-            @RequestParam(value = "count", defaultValue = "10", required = false) Byte count) {
+            @RequestParam(value = "count", defaultValue = "10", required = false) Integer count) {
         return filmService.getPopularFilms(count);
     }
 

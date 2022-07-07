@@ -10,11 +10,9 @@ import java.util.Optional;
 
 public interface UserStorage {
 
-    public Collection<User> getAll();
-    public User create(@Valid @RequestBody User user) throws ValidationException;
-
-    public User updateUser(@Valid @RequestBody User user) throws ValidationException;
-
-    public User getUser(Long id);
+    Collection<User> getAll();
+    User create(@Valid @RequestBody User user) throws ValidationException;
+    User updateUser(@Valid @RequestBody User user) throws ValidationException;
+    User getUser(Long id);
 
 }

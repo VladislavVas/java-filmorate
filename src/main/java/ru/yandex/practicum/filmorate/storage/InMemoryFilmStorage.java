@@ -15,7 +15,7 @@ import java.util.*;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
 
-    Validator validator;
+    private Validator validator;
     private Map<Long, Film> films = new HashMap<>();
     private long id = 1;
 

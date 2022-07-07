@@ -8,10 +8,9 @@ import java.util.Optional;
 
 public interface FilmStorage {
 
-    public List<Film> getAll();
-    public Film create(Film film) throws ValidationException;
-    public Film put(Film film) throws ValidationException;
-    public Film getFilm(Long id);
-
+    List<Film> getAll();
+    Film create(Film film) throws ValidationException;
+    Film put(Film film) throws ValidationException;
+    Film getFilm(Long id);
     void deleteFilm(Long id);
 }

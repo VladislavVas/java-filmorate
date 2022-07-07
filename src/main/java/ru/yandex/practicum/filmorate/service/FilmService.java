@@ -44,7 +44,7 @@ public class FilmService {
         return film;
     }
 
-    public Collection<Film> getPopularFilms(Byte count) {
+    public Collection<Film> getPopularFilms(Integer count) {
         return filmStorage.getAll().stream().sorted((p0, p1) -> {
             int compare = Integer.compare(p0.getLikes().size(), p1.getLikes().size());
             return compare;

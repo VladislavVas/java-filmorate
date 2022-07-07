@@ -11,19 +11,19 @@ public class ExceptionsHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handle400(ValidationException e) {
+    public Map<String, String> handleBadRequest(ValidationException e) {
         return Map.of("ERROR", e.getMessage());
     }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handle404(RuntimeException e) {
+    public Map<String, String> handleNotFoundException(RuntimeException e) {
         return Map.of("ERROR", e.getMessage());
     }
 
     @ExceptionHandler(ServerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handle500(RuntimeException e) {
+    public Map<String, String> handlServerError(RuntimeException e) {
         return Map.of("ERROR", e.getMessage());
     }
 }
