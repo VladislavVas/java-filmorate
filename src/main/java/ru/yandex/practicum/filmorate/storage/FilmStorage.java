@@ -10,7 +10,7 @@ public interface FilmStorage {
 
     List<Film> getAll();
     Film create(Film film) throws ValidationException;
-    Film put(Film film) throws ValidationException;
+    Film updateFilm(Film film) throws ValidationException;
     Film getFilm(Long id);
     void deleteFilm(Long id);
 }

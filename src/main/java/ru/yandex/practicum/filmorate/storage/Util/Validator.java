@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.Util;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
@@ -8,16 +8,19 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 
 @Component
-public class Validator {
+public class Validator { // сделать сторадж сервис? добавить ай ди гену сюда
+
+    long id = 0;
+
+    public Long getId(){
+        id++;
+        return id;
+    }
 
     public void userValidator(User user) throws ValidationException {
         if(user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             throw new ValidationException("Ошибка ввода электронной почты");
         }
- //       if(users.containsKey(user.getEmail())) {
- //           throw new ValidationException("Пользователь с электронной почтой " +
- //                   user.getEmail() + " уже зарегистрирован.");
- //       }
         if(user.getBirthday().isAfter(LocalDate.now())){
             throw new ValidationException("Дата рождения не может быть в будущем");
         }
@@ -33,9 +36,6 @@ public class Validator {
         if(film.getName().isBlank()||film.getName() == null){
             throw new ValidationException("Название не может быть пустым.");
         }
-//        if(films.containsKey(film.getName())){
-//            throw new ValidationException("Такой фильм уже есть.");
-//        }
         if(film.getDescription().length()>200){
             throw new ValidationException("Описание не может содержать более 200 символов.");
         }

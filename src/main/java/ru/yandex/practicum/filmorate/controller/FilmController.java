@@ -7,46 +7,45 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.model.Film;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.DAO.impl.FilmDbStorage;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
 public class FilmController {
 
-    private FilmStorage filmStorage;
+    private FilmDbStorage filmStorage;
     private FilmService filmService;
 
     @Autowired
-    public FilmController(FilmStorage filmStorage, FilmService filmService){
-        this.filmStorage = filmStorage;
+    public FilmController(FilmDbStorage filmDbStorage, FilmService filmService){
+        this.filmStorage = filmDbStorage;
         this.filmService = filmService;
     }
 
     @GetMapping
     public List<Film> getAll() {
-        return filmStorage.getAll();
+        return filmService.getAll();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) throws ValidationException {
-        return filmStorage.create(film);
+        return filmService.createFilm(film);
     }
 
     @PutMapping
     public Film put(@Valid @RequestBody Film film) throws ValidationException{
-        return filmStorage.put(film);
+        return filmService.updateFilm(film);
     }
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(
             @PathVariable Long id,
             @PathVariable Long userId) {
+        getFilmById(id);
         filmService.addLike(id, userId);
     }
 
@@ -54,6 +53,7 @@ public class FilmController {
     public void deleteLike(
             @PathVariable Long id,
             @PathVariable Long userId) {
+        getFilmById(id);
         filmService.deleteLike(id, userId);
     }
 
