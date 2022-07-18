@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 @Builder
 public class Film implements Comparable<Film>{
-   // @JsonProperty("id")
+    @JsonProperty("jsonData.id")
     private Long id;
     private String name;
     private String description;
@@ -20,6 +20,7 @@ public class Film implements Comparable<Film>{
     private Long duration;
     private List<Genre> genre;
     private Integer rate;
+
     private Set<Long> likes = new HashSet<>();
 
     @Override

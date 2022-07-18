@@ -28,7 +28,8 @@ public class GenreDbStorage implements GenreDAO {
     @Override
     public Collection<Genre> getAll() {
         final String sql = "SELECT * FROM GENRE";
-        return jdbcTemplate.query(sql, new GenreMapper());
+        List<Genre> genres = jdbcTemplate.query(sql, new GenreMapper());
+        return genres;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class GenreDbStorage implements GenreDAO {
     }
 
     public Film setFilmGenre (Film film){
-        cleanTable(film.getId());
+        //cleanTable(film.getId());
         if (film.getGenre()==null){
             String sql = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
             jdbcTemplate.update(sql, film.getId(), null);

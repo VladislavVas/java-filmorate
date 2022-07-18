@@ -27,7 +27,7 @@ public class MPAcontroller {
     }
 
     @GetMapping
-    public Collection<Rate> getAll() {
+    public List<Rate> getAll() {
         return rateDbStorage.getAll();
     }
 

@@ -13,6 +13,7 @@ import ru.yandex.practicum.filmorate.storage.RateDAO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 
 @Slf4j
@@ -26,9 +27,10 @@ public class RateDbStorage implements RateDAO {
     }
 
     @Override
-    public Collection<Rate> getAll() {
+    public List<Rate> getAll() {
         final String sql = "SELECT * FROM RATE";
-        return jdbcTemplate.query(sql, new RateMapper());
+        List<Rate> rate =  jdbcTemplate.query(sql, new RateMapper());
+        return rate;
     }
 
     @Override
