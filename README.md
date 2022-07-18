@@ -1,6 +1,7 @@
 
 [QuickDBD-export.pdf](https://github.com/VladislavVas/java-filmorate/files/9129700/QuickDBD-export.pdf)
 
+[QuickDBD-export.pdf](https://github.com/VladislavVas/java-filmorate/files/9129700/QuickDBD-export.pdf)
 
 
 
