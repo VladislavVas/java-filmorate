@@ -55,17 +55,7 @@ public class FilmDbStorage implements FilmStorage {
     private Film fuckFilmId (Film film){
         Long id = validator.getId();
         String sql = "INSERT INTO FILMS(FILM_ID, FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION) values (?, ?, ?, ?, ?)";
-        return jdbcTemplate.query(sql,
-                        new FilmMapper(),
-                        film.getName())
-                .stream()
-                .findAny()
-                .orElseThrow(() -> new NotFoundException("Опять косяк с айди"));
-
-
-
-
-      /*  jdbcTemplate.update(sql,
+        jdbcTemplate.update(sql,
                 id,
                 film.getName(),
                 film.getDescription(),
@@ -73,7 +63,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.getDuration());
         film.setId(id);
         log.info("Создан фильм id=%", id);
-        return film;*/
+        return film;
     }
 
 
