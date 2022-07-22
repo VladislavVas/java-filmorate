@@ -16,8 +16,8 @@ import java.util.*;
 @RequestMapping("/users")
 public class UserController {
 
-    UserDbStorage userStorage;
-    UserService userService;
+    private final UserDbStorage userStorage;
+    private final UserService userService;
 
     @Autowired
     public UserController (UserDbStorage userDbStorage, UserService userService){

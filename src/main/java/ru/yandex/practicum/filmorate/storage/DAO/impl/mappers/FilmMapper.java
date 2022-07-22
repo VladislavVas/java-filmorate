@@ -16,6 +16,7 @@ public class FilmMapper implements RowMapper<Film> {
                 .description(rs.getString(3))
                 .releaseDate(rs.getDate(4).toLocalDate())
                 .duration(rs.getLong(5))
+                .rate(rs.getInt(6))
                 .build();
         log.info("Выгрузка фильма из БД id= " + film.getId() + ".");
         return film;

@@ -7,10 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Rate;
+import ru.yandex.practicum.filmorate.model.Genres;
 import ru.yandex.practicum.filmorate.storage.DAO.impl.GenreDbStorage;
-import ru.yandex.practicum.filmorate.storage.DAO.impl.RateDbStorage;
 
 import java.util.Collection;
 
@@ -20,22 +18,22 @@ import java.util.Collection;
 public class GenreController {
 
     @Autowired
-    GenreDbStorage genreDbStorage;
+    private final GenreDbStorage genreDbStorage;
 
     public GenreController(GenreDbStorage genreDbStorage) {
         this.genreDbStorage = genreDbStorage;
     }
 
     @GetMapping
-    public Collection<Genre> getAll() {
+    public Collection<Genres> getAll() {
         return genreDbStorage.getAll();
     }
 
     @GetMapping("/{id}")
-    public Genre get(@PathVariable int id) {
-        Genre genre = genreDbStorage.get(id);
-        if (genre == null) throw new NotFoundException("Запрошен неизвестный жанр!");
-        return genre;
+    public Genres get(@PathVariable int id) {
+        Genres genres = genreDbStorage.get(id);
+        if (genres == null) throw new NotFoundException("Запрошен неизвестный жанр!");
+        return genres;
     }
 
 }

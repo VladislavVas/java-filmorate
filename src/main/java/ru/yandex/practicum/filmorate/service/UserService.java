@@ -58,17 +58,15 @@ public class UserService {
 
     public List<User> getCommonFriends (Long firstId, Long otherId) { //должно так же работать
         if (userStorage.getUser(firstId)!= null && userStorage.getUser(otherId)!= null){
-            Set<Long> commonSet = new HashSet<Long>(friendsDbStorage.getFriendsIds(firstId));
-            commonSet.retainAll(friendsDbStorage.getFriendsIds(otherId));
             log.info("Запрос общих друзей пользователей id " + firstId + " и id " +
                     otherId + ".");
-            return commonSet
-                    .stream()
-                    .map(userStorage::getUser)
-                    .collect(Collectors.toList());
+                List<User> user = getAllUserFriends(firstId);
+                List<User> otherUser = getAllUserFriends(otherId);
+                return user.stream().filter(otherUser::contains).collect(Collectors.toList());
         } else {
             log.info("Запрос общих друзей несуществующего пользователя.");
             throw new NotFoundException(String.format("Пользователь не найден"));
         }
     }
 }
+

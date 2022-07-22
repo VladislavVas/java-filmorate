@@ -3,20 +3,26 @@ package ru.yandex.practicum.filmorate.storage.DAO.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Rate;
+import ru.yandex.practicum.filmorate.model.Genres;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.DAO.impl.mappers.FilmMapper;
 import ru.yandex.practicum.filmorate.storage.DAO.impl.mappers.GenreMapper;
-import ru.yandex.practicum.filmorate.storage.DAO.impl.mappers.RateMapper;
-import ru.yandex.practicum.filmorate.storage.DAO.impl.mappers.UserMapper;
+import ru.yandex.practicum.filmorate.storage.DAO.impl.mappers.MpaMapper;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.Util.Validator;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -33,61 +39,69 @@ public class FilmDbStorage implements FilmStorage {
         this.validator = validator;
     }
 
+    private static long mapRowToLong(ResultSet resultSet, int rowNum) throws SQLException {
+        return resultSet.getLong(1);
+    }
 
     @Override
     public List<Film> getAll() {
         String sql = "SELECT * FROM FILMS";
-        List <Film> filmsFromDb = jdbcTemplate.query(sql,new FilmMapper());
-        for (Film film : filmsFromDb){
-            film.setRate(getRate(film));
-            film.setGenre(getGenre(film));
+        List<Film> filmsFromDb = jdbcTemplate.query(sql, new FilmMapper());
+        for (Film film : filmsFromDb) {
+            getMpa(film);
+            getGenre(film);
         }
         return filmsFromDb;
     }
 
     @Override
-    public Film create(Film film) throws ValidationException {
-        validator.filmValidator(film);
-        fuckFilmId(film);
-        return getFilm(film.getId());
+    public List<Film> getPopular(Integer count) {
+        String sql = "select * from FILMS order by RATE limit  ?"; //?? desc
+        return jdbcTemplate.query(sql, (rs, rowNum) -> getFilm(rs.getLong(1)), count);
     }
 
-    private Film fuckFilmId (Film film){
-        Long id = validator.getId();
-        String sql = "INSERT INTO FILMS(FILM_ID, FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION) values (?, ?, ?, ?, ?)";
-        jdbcTemplate.update(sql,
-                id,
-                film.getName(),
-                film.getDescription(),
-                film.getReleaseDate(),
-                film.getDuration());
-        film.setId(id);
-        log.info("Создан фильм id=%", id);
+    @Override
+    public Film create(Film film) throws ValidationException {
+        validator.filmValidator(film);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        final String sql = "INSERT INTO FILMS(FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATE) values (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(connection -> {
+            PreparedStatement stmt = connection.prepareStatement(sql, new String[]{"film_id"});
+            stmt.setString(1, film.getName());
+            stmt.setString(2, film.getDescription());
+            stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
+            stmt.setLong(4, film.getDuration()); //??? ++rate??
+            stmt.setInt(5, film.getRate());
+            return stmt;
+        }, keyHolder);
+        film.setId(keyHolder.getKey().longValue());
         return film;
     }
 
-
-
     @Override
     public Film updateFilm(Film film) throws ValidationException {
-        testId (film.getId());
+        testId(film.getId());
         validator.filmValidator(film);
-            String sql = "UPDATE FILMS SET FILM_NAME=?, DESCRIPTION=?, RELEASE_DATE=?, DURATION=? WHERE FILM_ID=?";
-            jdbcTemplate.update(sql, film.getName(),
-                                     film.getDescription(),
-                                     film.getReleaseDate(),
-                                     film.getDuration(),
-                                     film.getId());
-       return film;
+        String sql = "UPDATE FILMS SET FILM_NAME=?, DESCRIPTION=?, RELEASE_DATE=?, DURATION=? WHERE FILM_ID=?";
+        jdbcTemplate.update(sql, film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration(),
+                film.getId());
+        return film;
     }
 
     @Override
     public Film getFilm(Long id) {
-        testId (id);
+        testId(id);
         String sql = "SELECT * FROM FILMS WHERE FILM_ID = ?";
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
         if (userRows.next()) {
-            return  jdbcTemplate.queryForObject(sql, new FilmMapper(), id);
+            Film film = jdbcTemplate.queryForObject(sql, new FilmMapper(), id);
+            getGenre(film);
+            getMpa(film);
+            setLikes(film);
+            return film;
         } else {
             throw new NotFoundException("Такого фильма не существует");
         }
@@ -95,7 +109,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public void deleteFilm(Long id) {
-        testId (id);
+        testId(id);
         String sql = "DELETE FROM FILMS WHERE FILM_ID = ?";
         SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
         if (userRows.next()) {
@@ -105,29 +119,50 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
-    private int getRate (Film film){
-        String sql = "SELECT * FROM FILM_RATE WHERE RATE_ID IN(SELECT RATE_ID FROM FILMS WHERE FILM_ID = ?)";
-        Rate rate = jdbcTemplate.queryForObject(sql, new RateMapper(), film.getId());
-        return rate.getRateId();
+    private void getMpa(Film film) {
+        String sql = "SELECT\n" +
+                "FR.MPA_ID,\n" +
+                "R.MPA_NAME\n" +
+                "FROM FILM_MPA AS FR\n" +
+                "LEFT JOIN MPA AS R ON R.MPA_ID = FR.MPA_ID\n" +
+                "WHERE FILM_ID = ?";
+        Mpa mpa = jdbcTemplate.queryForObject(sql, new MpaMapper(), film.getId());
+        film.setMpa(mpa);
     }
 
-    private List<Genre> getGenre (Film film) {
-        String sql = "SELECT * FROM FILM_GENRE WHERE GENRE_ID IN (SELECT GENRE_ID FROM FILMS WHERE FILM_ID = ?)";
-        List<Genre> genres = jdbcTemplate.query(sql, new GenreMapper(), film.getId());
-        return genres;
+    private void getGenre(Film film) {
+        String sql = "SELECT DISTINCT\n" +
+                "FG.GENRE_ID,\n" +
+                "G.GENRE_NAME\n" +
+                "FROM FILM_GENRE AS FG\n" +
+                "LEFT JOIN GENRE AS G ON G.GENRE_ID = FG.GENRE_ID\n" +
+                "WHERE FILM_ID = ?";
+        List<Genres> genres = jdbcTemplate.query(sql, new GenreMapper(), film.getId());
+        film.setGenres(genres);
+    }
+
+    private void testId(long id) {
+        String sql = "SELECT * FROM FILMS WHERE FILM_ID = ?";
+        Film film = jdbcTemplate.query(
+                        sql,
+                        new FilmMapper(),
+                        id)
+                .stream()
+                .findAny()
+                .orElseThrow(() -> new NotFoundException("Фильма с id " + id + " нет в БД."));
+    }
+
+    @Override
+    public Film setLikes(Film film) {
+        long filmId = film.getId();
+        String sql = "SELECT COUNT(USER_ID)\n" +
+                "FROM LIKES\n" +
+                "WHERE FILM_ID = ?";
+        List<Long> likes = jdbcTemplate.query(sql, FilmDbStorage::mapRowToLong, filmId);
+        film.setLikes(new HashSet<>(likes));
+        return film;
     }
 
 
-
-    private void testId (long id) {
-            String sql = "SELECT * FROM FILMS WHERE FILM_ID = ?";
-            Film film = jdbcTemplate.query(
-                            sql,
-                            new FilmMapper(),
-                            id)
-                    .stream()
-                    .findAny()
-                    .orElseThrow(() -> new NotFoundException("Фильма с id " + id + " нет в БД."));
-                }
 }
 

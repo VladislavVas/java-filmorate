@@ -22,12 +22,12 @@ public class UserDbStorage implements UserStorage {
     private final Validator validator;
 
 
-
     @Autowired
     public UserDbStorage(JdbcTemplate jdbcTemplate, Validator validator) {
         this.jdbcTemplate = jdbcTemplate;
         this.validator = validator;
     }
+
     @Override
     public Collection<User> getAll() {
         String sql = "SELECT * FROM USERS";
@@ -52,17 +52,17 @@ public class UserDbStorage implements UserStorage {
                         user.getLogin())
                 .stream()
                 .findAny()
-                .orElseThrow(() -> new NotFoundException("Опять косяк с айди"));
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
     }
 
     @Override
     public User updateUser(User user) throws ValidationException, NotFoundException {
         validator.userValidator(user);
         testId(user.getId());
-            String sql = "UPDATE USERS SET EMAIL=?, LOGIN=?, NAME=?, BIRTHDAY=? WHERE USER_ID=?";
-            jdbcTemplate.update(sql, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
-            log.info("Обновлены данные пользователя id " + user.getId() + ".");
-            return user;
+        String sql = "UPDATE USERS SET EMAIL=?, LOGIN=?, NAME=?, BIRTHDAY=? WHERE USER_ID=?";
+        jdbcTemplate.update(sql, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
+        log.info("Обновлены данные пользователя id " + user.getId() + ".");
+        return user;
     }
 
     @Override
@@ -70,10 +70,10 @@ public class UserDbStorage implements UserStorage {
         testId(id);
         String sql = "SELECT * FROM USERS WHERE USER_ID = ?";
         User user = jdbcTemplate.queryForObject(sql, new UserMapper(), id);
-            return user;
+        return user;
     }
 
-    private void testId (long id) {
+    private void testId(long id) {
         String sql = "SELECT * FROM USERS WHERE USER_ID = ?";
         User user = jdbcTemplate.query(
                         sql,

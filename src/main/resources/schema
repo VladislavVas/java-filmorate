@@ -1,3 +1,41 @@
+
+drop table FILM_MPA;
+drop table MPA;
+drop table FILM_GENRE;
+drop table GENRE;
+drop table LIKES;
+drop table FRIENDSHIP;
+drop table FILMS;
+drop table USERS;
+
+create table if not exists FILMS
+(
+    FILM_ID      INTEGER auto_increment,
+    FILM_NAME    CHARACTER VARYING(50) not null,
+    DESCRIPTION  CHARACTER VARYING(200),
+    RELEASE_DATE DATE                  not null,
+    DURATION     INTEGER,
+    RATE         INTEGER,
+    constraint FILMS_PK
+        primary key (FILM_ID)
+);
+
+create table if not exists GENRE
+(
+    GENRE_ID   INTEGER auto_increment
+        constraint GENRE_PK
+            unique,
+    GENRE_NAME CHARACTER VARYING(20) default NULL
+);
+
+create table if not exists MPA
+(
+    MPA_ID   INTEGER auto_increment,
+    MPA_NAME CHARACTER VARYING(10),
+    constraint RATE_PK
+        primary key (MPA_ID)
+);
+
 create table if not exists FILM_GENRE
 (
     FILM_ID  INTEGER,
@@ -8,25 +46,26 @@ create table if not exists FILM_GENRE
         foreign key (GENRE_ID) references GENRE (GENRE_ID)
 );
 
-create table if not exists FILM_RATE
+create table if not exists FILM_MPA
 (
     FILM_ID INTEGER,
-    RATE_ID INTEGER,
+    MPA_ID INTEGER auto_increment,
     constraint FILM_RATE_FILMS_FILM_ID_FK
         foreign key (FILM_ID) references FILMS,
     constraint FILM_RATE_RATE_RATE_ID_FK
-        foreign key (RATE_ID) references RATE
+        foreign key (MPA_ID) references MPA
 );
 
-create table if not exists FILMS
+
+create table if not exists USERS
 (
-    FILM_ID      INTEGER               not null,
-    FILM_NAME    CHARACTER VARYING(50) not null,
-    DESCRIPTION  CHARACTER VARYING(200),
-    RELEASE_DATE DATE                  not null,
-    DURATION     INTEGER,
-    constraint FILMS_PK
-        primary key (FILM_ID)
+    USER_ID  INTEGER auto_increment,
+    EMAIL    CHARACTER VARYING(30) not null,
+    LOGIN    CHARACTER VARYING(20) not null,
+    NAME     CHARACTER VARYING(50),
+    BIRTHDAY DATE                  not null,
+    constraint USERS_PK
+        primary key (USER_ID)
 );
 
 create table if not exists FRIENDSHIP
@@ -40,51 +79,18 @@ create table if not exists FRIENDSHIP
         foreign key (USER_ID) references USERS
 );
 
-create table if not exists GENRE
-(
-    GENRE_ID   INTEGER auto_increment
-        constraint GENRE_PK
-            unique,
-    GENRE_NAME CHARACTER VARYING(20) default NULL
-);
-
 create table if not exists LIKES
 (
-    FILM_ID INTEGER not null,
-    USER_ID INTEGER not null,
-    constraint LIKES_FILMS_FILM_ID_FK
-        foreign key (FILM_ID) references FILMS,
-    constraint LIKES_USERS_USER_ID_FK
-        foreign key (USER_ID) references USERS
+    FILM_ID INTEGER not null
+        references FILMs
+        references FILMs,
+    USER_ID INTEGER not null
+        references USERs
+        references USERs,
+    primary key (FILM_ID, USER_ID)
 );
 
-create unique index if not exists LIKES_FILM_ID_UINDEX
-    on LIKES (FILM_ID);
-
-create unique index LIKES_USER_ID_UINDEX
-    on LIKES (USER_ID);
-
-create table if not exists RATE
-(
-    RATE_ID   INTEGER auto_increment,
-    RATE_NAME CHARACTER VARYING(10),
-    constraint RATE_PK
-        primary key (RATE_ID)
-);
-
-create table if not exists USERS
-(
-    USER_ID  INTEGER auto_increment,
-    EMAIL    CHARACTER VARYING(30) not null,
-    LOGIN    CHARACTER VARYING(20) not null,
-    NAME     CHARACTER VARYING(50),
-    BIRTHDAY DATE                  not null,
-    constraint USERS_PK
-        primary key (USER_ID)
-);
-
-
-MERGE INTO RATE key (RATE_ID)
+MERGE INTO MPA key (MPA_ID)
     VALUES (1, 'G'),
            ( 2, 'PG'),
            ( 3, 'PG-13') ,
