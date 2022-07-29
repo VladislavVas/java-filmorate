@@ -8,14 +8,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 
 @Component
-public class Validator { // сделать сторадж сервис? добавить ай ди гену сюда
+public class Validator {
 
-    long id = 0;
-
-    public Long getId(){
-        id++;
-        return id;
-    }
 
     public void userValidator(User user) throws ValidationException {
         if(user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
@@ -45,5 +39,8 @@ public class Validator { // сделать сторадж сервис? доба
         if(film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))
             throw new ValidationException("Невозможно добавить фильм с датой релиза ранее 28.12.1985 г.");
 
+        if(film.getMpa()==null){
+            throw new ValidationException("Невозможно добавить фильм без mpa");
+        }
     }
 }

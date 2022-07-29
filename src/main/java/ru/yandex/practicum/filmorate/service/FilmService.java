@@ -48,8 +48,6 @@ public class FilmService {
    public void addLike (long userId, long filmId){
             likeDbStorage.addLike(userId, filmId);
             log.info("Фильм id " + filmId + " получил лайк" + "пользователя " + userId + ".");
-
-
    }
 
 
@@ -57,17 +55,8 @@ public class FilmService {
             Film film = filmStorage.getFilm(filmId);
             User user = userStorage.getUser(userId);
         likeDbStorage.deleteLike(userId, filmId);
-        /*    if (film.getLikes().contains(userId)&&film.getLikes()!=null) {
-
-            } else {
-                throw new NotFoundException("Юзер id " + userId + " не ставил лайк филму id " + filmId);
-            }*/
     }
 
-    public Collection<Film> getPopularFilms(Integer count) {
-        return likeDbStorage.getPopularFilms(count);
-                //filmStorage.getPopular(count);
-    }
 
     public Film updateFilm(Film film) throws ValidationException {
         filmStorage.updateFilm(film);

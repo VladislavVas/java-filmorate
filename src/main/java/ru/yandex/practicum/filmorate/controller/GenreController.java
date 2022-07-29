@@ -35,6 +35,5 @@ public class GenreController {
         if (genres == null) throw new NotFoundException("Запрошен неизвестный жанр!");
         return genres;
     }
-
 }
 

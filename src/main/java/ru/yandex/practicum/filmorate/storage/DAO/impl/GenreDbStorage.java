@@ -42,12 +42,14 @@ public class GenreDbStorage implements GenreDAO {
     }
 
     public void setFilmGenre(Film film) {
-        List<Genres> genresSet = film.getGenres();
+        List<Genres> genresList = film.getGenres();
         cleanTable(film.getId());
-        List<Genres> genresList = genresSet.stream().collect(Collectors.toList());
-        for (Genres genres : genresList) {
-            String sql = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
-            jdbcTemplate.update(sql, film.getId(), genres.getId());
+       // List<Genres> genresList = genresSet.stream().collect(Collectors.toList());
+        if (genresList != null) {
+            for (Genres genres : genresList) {
+                String sql = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
+                jdbcTemplate.update(sql, film.getId(), genres.getId());
+            }
         }
     }
 

@@ -56,7 +56,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getPopular(Integer count) {
-        String sql = "select * from FILMS order by RATE limit  ?"; //?? desc
+        String sql = "select * from FILMS order by RATE limit  ?";
         return jdbcTemplate.query(sql, (rs, rowNum) -> getFilm(rs.getLong(1)), count);
     }
 
@@ -70,7 +70,7 @@ public class FilmDbStorage implements FilmStorage {
             stmt.setString(1, film.getName());
             stmt.setString(2, film.getDescription());
             stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
-            stmt.setLong(4, film.getDuration()); //??? ++rate??
+            stmt.setLong(4, film.getDuration());
             stmt.setInt(5, film.getRate());
             return stmt;
         }, keyHolder);
@@ -126,8 +126,11 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM FILM_MPA AS FR\n" +
                 "LEFT JOIN MPA AS R ON R.MPA_ID = FR.MPA_ID\n" +
                 "WHERE FILM_ID = ?";
-        Mpa mpa = jdbcTemplate.queryForObject(sql, new MpaMapper(), film.getId());
-        film.setMpa(mpa);
+        SqlRowSet mpaRows = jdbcTemplate.queryForRowSet(sql, film.getId());
+        if (mpaRows.next()){
+            Mpa mpa = jdbcTemplate.queryForObject(sql, new MpaMapper(), film.getId());
+            film.setMpa(mpa);
+        }
     }
 
     private void getGenre(Film film) {
@@ -162,7 +165,5 @@ public class FilmDbStorage implements FilmStorage {
         film.setLikes(new HashSet<>(likes));
         return film;
     }
-
-
 }
 
