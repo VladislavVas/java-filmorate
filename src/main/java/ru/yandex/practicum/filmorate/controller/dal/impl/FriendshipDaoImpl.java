@@ -1,8 +1,9 @@
-package ru.yandex.practicum.filmorate.controller.storage.friends;
+package ru.yandex.practicum.filmorate.controller.dal.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.controller.dal.dao.FriendshipDao;
 
 import java.util.Collection;
 import java.util.List;
@@ -10,11 +11,11 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class FriendsDbStorage implements FriendshipDAO {
+public class FriendshipDaoImpl implements FriendshipDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public FriendsDbStorage(JdbcTemplate jdbcTemplate) {
+    public FriendshipDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

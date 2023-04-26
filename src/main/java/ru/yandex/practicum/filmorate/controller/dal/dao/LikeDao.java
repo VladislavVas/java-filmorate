@@ -1,6 +1,6 @@
-package ru.yandex.practicum.filmorate.controller.storage.like;
+package ru.yandex.practicum.filmorate.controller.dal.dao;
 
-public interface LikeDAO {
+public interface LikeDao {
     void addLike(long filmId, long userId);
     void deleteLike(long filmId, long userId);
 }

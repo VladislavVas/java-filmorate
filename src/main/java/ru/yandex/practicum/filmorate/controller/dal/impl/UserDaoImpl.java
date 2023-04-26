@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller.storage.users;
+package ru.yandex.practicum.filmorate.controller.dal.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,21 +6,22 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.controller.dal.dao.UserDao;
+import ru.yandex.practicum.filmorate.controller.dal.mappers.UserMapper;
+import ru.yandex.practicum.filmorate.controller.dal.util.Validator;
 import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.User;
-import ru.yandex.practicum.filmorate.controller.storage.mappers.UserMapper;
-import ru.yandex.practicum.filmorate.controller.storage.util.Validator;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.util.Collection;
+import java.util.List;
 
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class UserDbStorage implements UserStorage {
+public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final Validator validator;
@@ -31,11 +32,10 @@ public class UserDbStorage implements UserStorage {
     private static final String UPDATE_USER = "UPDATE USERS SET EMAIL=?, LOGIN=?, NAME=?, BIRTHDAY=? WHERE USER_ID=?";
 
     @Override
-    public Collection<User> getAll() {
+    public List<User> getAll() {
         log.info("DB: Get all users");
         return jdbcTemplate.query(GET_ALL_USERS, new UserMapper());
     }
-
 
     @Override
     public User createUser(User user) throws ValidationException {
@@ -56,28 +56,19 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User updateUser(User user) throws ValidationException, NotFoundException {
         validator.userValidator(user);
-        testId(user.getId());
         jdbcTemplate.update(UPDATE_USER, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
         log.info("DB: update user  id=" + user.getId());
-        return jdbcTemplate.queryForObject(GET_USER, new UserMapper(), user.getId());
+        return getUser(user.getId());
     }
 
     @Override
     public User getUser(Long id) throws NotFoundException {
-        testId(id);
-        log.info("DB: get user id=" + id);
-        return jdbcTemplate.queryForObject(GET_USER, new UserMapper(), id);
-    }
-
-    private void testId(Long id) {
-        String sql = "SELECT * FROM USERS WHERE USER_ID = ?";
-        User user = jdbcTemplate.query(
-                        sql,
-                        new UserMapper(),
-                        id)
-                .stream()
-                .findAny()
-                .orElseThrow(() -> new NotFoundException("Юзера с id " + id + " нет в БД."));
+        try {
+            log.info("DB: get user id=" + id);
+            return jdbcTemplate.queryForObject(GET_USER, new UserMapper(), id);
+        } catch (Exception e) {
+            throw new NotFoundException("User not found");
+        }
     }
 
 }

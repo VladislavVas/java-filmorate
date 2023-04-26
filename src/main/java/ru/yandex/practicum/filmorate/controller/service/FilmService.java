@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.Film;
-import ru.yandex.practicum.filmorate.controller.storage.films.FilmStorage;
-import ru.yandex.practicum.filmorate.controller.storage.users.UserStorage;
+import ru.yandex.practicum.filmorate.controller.dal.dao.FilmDao;
+import ru.yandex.practicum.filmorate.controller.dal.dao.UserDao;
 import ru.yandex.practicum.filmorate.controller.model.User;
-import ru.yandex.practicum.filmorate.controller.storage.genre.GenreDbStorage;
-import ru.yandex.practicum.filmorate.controller.storage.mpa.MpaDbStorage;
-import ru.yandex.practicum.filmorate.controller.storage.like.LikeDbStorage;
+import ru.yandex.practicum.filmorate.controller.dal.impl.GenreDaoImpl;
+import ru.yandex.practicum.filmorate.controller.dal.impl.MpaDaoImpl;
+import ru.yandex.practicum.filmorate.controller.dal.impl.LikeDaoImpl;
 
 import java.util.*;
 
@@ -19,42 +19,42 @@ import java.util.*;
 @RequiredArgsConstructor
 public class FilmService {
 
-    private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
-    private final GenreDbStorage genreDbStorage;
-    private final MpaDbStorage mpaDbStorage;
-    private final LikeDbStorage likeDbStorage;
+    private final FilmDao filmDAO;
+    private final UserDao userDAO;
+    private final GenreDaoImpl genreDaoImpl;
+    private final MpaDaoImpl mpaDaoImpl;
+    private final LikeDaoImpl likeDaoImpl;
 
 
     public List<Film> getAll() {
-        return filmStorage.getAll();
+        return filmDAO.getAll();
     }
 
 
    public void addLike (long userId, long filmId){
-            likeDbStorage.addLike(userId, filmId);
+            likeDaoImpl.addLike(userId, filmId);
             log.info("Фильм id " + filmId + " получил лайк" + "пользователя " + userId + ".");
    }
 
 
     public void deleteLike(long filmId, long userId) {
-            Film film = filmStorage.getFilm(filmId);
-            User user = userStorage.getUser(userId);
-        likeDbStorage.deleteLike(userId, filmId);
+            Film film = filmDAO.getFilm(filmId);
+            User user = userDAO.getUser(userId);
+        likeDaoImpl.deleteLike(userId, filmId);
     }
 
 
     public Film updateFilm(Film film) throws ValidationException {
-        filmStorage.updateFilm(film);
-        genreDbStorage.setFilmGenre(film);
-        mpaDbStorage.setFilmMpa(film);
-        return filmStorage.getFilm(film.getId());
+        filmDAO.updateFilm(film);
+        genreDaoImpl.setFilmGenre(film);
+        mpaDaoImpl.setFilmMpa(film);
+        return filmDAO.getFilm(film.getId());
     }
 
     public Film createFilm(Film film) throws ValidationException {
-            filmStorage.create(film);
-            genreDbStorage.setFilmGenre(film);
-            mpaDbStorage.setFilmMpa(film);
-            return filmStorage.getFilm(film.getId());
+            filmDAO.create(film);
+            genreDaoImpl.setFilmGenre(film);
+            mpaDaoImpl.setFilmMpa(film);
+            return filmDAO.getFilm(film.getId());
     }
 }

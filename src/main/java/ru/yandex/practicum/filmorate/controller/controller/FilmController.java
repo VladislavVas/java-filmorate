@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.Film;
 import ru.yandex.practicum.filmorate.controller.service.FilmService;
-import ru.yandex.practicum.filmorate.controller.storage.films.FilmDbStorage;
+import ru.yandex.practicum.filmorate.controller.dal.impl.FilmDaoImpl;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FilmController {
 
-    private final FilmDbStorage filmStorage;
+    private final FilmDaoImpl filmStorage;
     private final FilmService filmService;
 
     @GetMapping

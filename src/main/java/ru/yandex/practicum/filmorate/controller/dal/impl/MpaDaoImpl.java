@@ -1,10 +1,11 @@
-package ru.yandex.practicum.filmorate.controller.storage.mpa;
+package ru.yandex.practicum.filmorate.controller.dal.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.controller.dal.dao.MpaDao;
 import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
-import ru.yandex.practicum.filmorate.controller.storage.mappers.MpaMapper;
+import ru.yandex.practicum.filmorate.controller.dal.mappers.MpaMapper;
 import ru.yandex.practicum.filmorate.controller.model.Film;
 import ru.yandex.practicum.filmorate.controller.model.Mpa;
 
@@ -13,11 +14,11 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class MpaDbStorage implements MpaDAO {
+public class MpaDaoImpl implements MpaDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public MpaDbStorage(JdbcTemplate jdbcTemplate) {
+    public MpaDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

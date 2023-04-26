@@ -119,7 +119,7 @@ public class FilmorateApplicationTest {
     public void testCreateUser() throws ValidationException{
         userController.create(user);
         assertEquals(1, userController.getAll().size());
-        assertEquals(1,userController.getUser(1).getId());
+        assertEquals(1,userController.getUser(1L).getId());
     }
 
     @Test
@@ -134,7 +134,7 @@ public class FilmorateApplicationTest {
         userController.create(user);
         user.setName("updateName");
         userController.put(user);
-        assertEquals("updateName", userController.getUser(1).getName());
+        assertEquals("updateName", userController.getUser(1L).getName());
     }
 
     @Test

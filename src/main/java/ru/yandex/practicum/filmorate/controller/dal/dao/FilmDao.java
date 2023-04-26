@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filmorate.controller.storage.films;
+package ru.yandex.practicum.filmorate.controller.dal.dao;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.Film;
 
 import java.util.List;
 
-public interface FilmStorage {
+public interface FilmDao {
 
     List<Film> getAll();
 

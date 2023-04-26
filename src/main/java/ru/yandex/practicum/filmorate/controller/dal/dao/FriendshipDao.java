@@ -1,8 +1,8 @@
-package ru.yandex.practicum.filmorate.controller.storage.friends;
+package ru.yandex.practicum.filmorate.controller.dal.dao;
 
 import java.util.Collection;
 
-public interface FriendshipDAO {
+public interface FriendshipDao {
 
     Collection<Long> getFriendsIds(Long id);
 

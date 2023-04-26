@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller.storage.films;
+package ru.yandex.practicum.filmorate.controller.dal.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,15 +7,16 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.controller.dal.dao.FilmDao;
 import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
-import ru.yandex.practicum.filmorate.controller.storage.mappers.FilmMapper;
-import ru.yandex.practicum.filmorate.controller.storage.mappers.GenreMapper;
-import ru.yandex.practicum.filmorate.controller.storage.mappers.MpaMapper;
+import ru.yandex.practicum.filmorate.controller.dal.mappers.FilmMapper;
+import ru.yandex.practicum.filmorate.controller.dal.mappers.GenreMapper;
+import ru.yandex.practicum.filmorate.controller.dal.mappers.MpaMapper;
 import ru.yandex.practicum.filmorate.controller.model.Film;
 import ru.yandex.practicum.filmorate.controller.model.Genres;
 import ru.yandex.practicum.filmorate.controller.model.Mpa;
-import ru.yandex.practicum.filmorate.controller.storage.util.Validator;
+import ru.yandex.practicum.filmorate.controller.dal.util.Validator;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -27,13 +28,13 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class FilmDbStorage implements FilmStorage {
+public class FilmDaoImpl implements FilmDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final Validator validator;
 
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, Validator validator) {
+    public FilmDaoImpl(JdbcTemplate jdbcTemplate, Validator validator) {
         this.jdbcTemplate = jdbcTemplate;
         this.validator = validator;
     }
@@ -160,7 +161,7 @@ public class FilmDbStorage implements FilmStorage {
         String sql = "SELECT COUNT(USER_ID)\n" +
                 "FROM LIKES\n" +
                 "WHERE FILM_ID = ?";
-        List<Long> likes = jdbcTemplate.query(sql, FilmDbStorage::mapRowToLong, filmId);
+        List<Long> likes = jdbcTemplate.query(sql, FilmDaoImpl::mapRowToLong, filmId);
         film.setLikes(new HashSet<>(likes));
         return film;
     }
