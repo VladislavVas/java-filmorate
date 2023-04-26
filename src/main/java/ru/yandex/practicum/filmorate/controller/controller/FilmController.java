@@ -1,31 +1,26 @@
 package ru.yandex.practicum.filmorate.controller.controller;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.Film;
 import ru.yandex.practicum.filmorate.controller.service.FilmService;
-import ru.yandex.practicum.filmorate.controller.storage.DAO.impl.FilmDbStorage;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.controller.storage.films.FilmDbStorage;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/films")
+@RequiredArgsConstructor
 public class FilmController {
 
-    private FilmDbStorage filmStorage;
-    private FilmService filmService;
-
-    @Autowired
-    public FilmController(FilmDbStorage filmDbStorage, FilmService filmService){
-        this.filmStorage = filmDbStorage;
-        this.filmService = filmService;
-    }
+    private final FilmDbStorage filmStorage;
+    private final FilmService filmService;
 
     @GetMapping
     public List<Film> getAll() {
@@ -38,7 +33,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film put(@Valid @RequestBody Film film) throws ValidationException{
+    public Film put(@Valid @RequestBody Film film) throws ValidationException {
         return filmService.updateFilm(film);
     }
 
@@ -68,7 +63,7 @@ public class FilmController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteFilmById(@RequestParam Long id){
+    public void deleteFilmById(@RequestParam Long id) {
         filmStorage.deleteFilm(id);
     }
 

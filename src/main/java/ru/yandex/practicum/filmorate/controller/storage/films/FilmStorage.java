@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller.storage;
+package ru.yandex.practicum.filmorate.controller.storage.films;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.Film;
 

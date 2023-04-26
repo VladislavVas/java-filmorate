@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller.storage;
+package ru.yandex.practicum.filmorate.controller.storage.like;
 
 public interface LikeDAO {
     void addLike(long filmId, long userId);

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller.storage.Util;
+package ru.yandex.practicum.filmorate.controller.storage.util;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;

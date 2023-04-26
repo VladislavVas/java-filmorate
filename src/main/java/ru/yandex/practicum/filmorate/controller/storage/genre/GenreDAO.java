@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller.storage;
+package ru.yandex.practicum.filmorate.controller.storage.genre;
 
 import ru.yandex.practicum.filmorate.controller.model.Genres;
 

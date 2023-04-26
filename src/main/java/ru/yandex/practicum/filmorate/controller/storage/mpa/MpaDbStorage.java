@@ -1,13 +1,12 @@
-package ru.yandex.practicum.filmorate.controller.storage.DAO.impl;
+package ru.yandex.practicum.filmorate.controller.storage.mpa;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
-import ru.yandex.practicum.filmorate.controller.storage.DAO.impl.mappers.MpaMapper;
+import ru.yandex.practicum.filmorate.controller.storage.mappers.MpaMapper;
 import ru.yandex.practicum.filmorate.controller.model.Film;
 import ru.yandex.practicum.filmorate.controller.model.Mpa;
-import ru.yandex.practicum.filmorate.controller.storage.MpaDAO;
 
 import java.util.List;
 

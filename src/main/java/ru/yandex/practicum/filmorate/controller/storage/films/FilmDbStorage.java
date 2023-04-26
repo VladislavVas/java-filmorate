@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controller.storage.DAO.impl;
+package ru.yandex.practicum.filmorate.controller.storage.films;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +9,13 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
-import ru.yandex.practicum.filmorate.controller.storage.DAO.impl.mappers.FilmMapper;
-import ru.yandex.practicum.filmorate.controller.storage.DAO.impl.mappers.GenreMapper;
-import ru.yandex.practicum.filmorate.controller.storage.DAO.impl.mappers.MpaMapper;
+import ru.yandex.practicum.filmorate.controller.storage.mappers.FilmMapper;
+import ru.yandex.practicum.filmorate.controller.storage.mappers.GenreMapper;
+import ru.yandex.practicum.filmorate.controller.storage.mappers.MpaMapper;
 import ru.yandex.practicum.filmorate.controller.model.Film;
 import ru.yandex.practicum.filmorate.controller.model.Genres;
 import ru.yandex.practicum.filmorate.controller.model.Mpa;
-import ru.yandex.practicum.filmorate.controller.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.controller.storage.Util.Validator;
+import ru.yandex.practicum.filmorate.controller.storage.util.Validator;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;

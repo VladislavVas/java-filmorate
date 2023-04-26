@@ -1,11 +1,10 @@
 package ru.yandex.practicum.filmorate.controller.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.User;
 import ru.yandex.practicum.filmorate.controller.service.UserService;
-import ru.yandex.practicum.filmorate.controller.storage.DAO.impl.UserDbStorage;
+import ru.yandex.practicum.filmorate.controller.storage.users.UserDbStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +32,7 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) throws ValidationException {
-        return userStorage.create(user);
+        return userStorage.createUser(user);
     }
 
     @PutMapping

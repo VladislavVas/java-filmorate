@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
-import ru.yandex.practicum.filmorate.controller.storage.DAO.impl.GenreDbStorage;
+import ru.yandex.practicum.filmorate.controller.storage.genre.GenreDbStorage;
 import ru.yandex.practicum.filmorate.controller.model.Genres;
 
 import java.util.Collection;

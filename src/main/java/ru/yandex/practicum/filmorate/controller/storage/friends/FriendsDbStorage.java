@@ -1,9 +1,8 @@
-package ru.yandex.practicum.filmorate.controller.storage.DAO.impl;
+package ru.yandex.practicum.filmorate.controller.storage.friends;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.controller.storage.FriendshipDAO;
 
 import java.util.Collection;
 import java.util.List;

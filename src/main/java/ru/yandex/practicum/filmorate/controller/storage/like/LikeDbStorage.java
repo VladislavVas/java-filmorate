@@ -1,8 +1,8 @@
-package ru.yandex.practicum.filmorate.controller.storage.DAO.impl;
+package ru.yandex.practicum.filmorate.controller.storage.like;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.controller.storage.LikeDAO;
+import ru.yandex.practicum.filmorate.controller.storage.like.LikeDAO;
 
 @Component
 public class LikeDbStorage implements LikeDAO {
