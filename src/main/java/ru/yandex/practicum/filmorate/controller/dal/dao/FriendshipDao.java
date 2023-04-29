@@ -1,10 +1,10 @@
 package ru.yandex.practicum.filmorate.controller.dal.dao;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface FriendshipDao {
 
-    Collection<Long> getFriendsIds(Long id);
+    List<Long> getFriendsIds(Long id);
 
     void addFriend(Long user_id, Long friend_id);
 

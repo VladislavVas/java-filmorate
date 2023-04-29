@@ -27,19 +27,12 @@ public class MpaDaoImpl implements MpaDao {
 
     @Override
     public List<Mpa> getAll() {
-//        List<Mpa> mpaList =
         return jdbcTemplate.query(GET_ALL_MPA, new MpaMapper());
-//        return mpaList;
     }
 
     @Override
     public Mpa get(int id) throws NotFoundException {
-        if (id < 0 || id > 5) {
-            throw new NotFoundException("Неизвестный MPA");
-        } else {
-            Mpa mpa = jdbcTemplate.queryForObject(GET_MPA, new MpaMapper(), id);
-            return mpa;
-        }
+        return jdbcTemplate.queryForObject(GET_MPA, new MpaMapper(), id);
     }
 
     @Override
@@ -47,7 +40,6 @@ public class MpaDaoImpl implements MpaDao {
         cleanTable(film.getId());
         film.getMpa().getId();
         if (film.getMpa() != null && film.getMpa().getId() != 0) {
-//            String sql = "INSERT INTO FILM_MPA (FILM_ID, MPA_ID) VALUES (?, ?)";
             jdbcTemplate.update(SET_MPA, film.getId(), film.getMpa().getId());
         }
         return film;

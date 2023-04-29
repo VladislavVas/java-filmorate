@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Slf4j
-public class FriendsMapper implements RowMapper <Friends>{
+public class FriendsMapper implements RowMapper<Friends> {
 
     @Override
     public Friends mapRow(ResultSet rs, int rowNum) throws SQLException {

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller.exeption;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -15,7 +16,7 @@ public class ExceptionsHandler {
         return Map.of("ERROR", e.getMessage());
     }
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler({NotFoundException.class, EmptyResultDataAccessException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleNotFoundException(RuntimeException e) {
         return Map.of("ERROR", e.getMessage());

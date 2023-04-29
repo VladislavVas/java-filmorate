@@ -27,11 +27,7 @@ public class UserService {
     }
 
     public User getUser(Long id) {
-        try {
             return users.getUser(id);
-        } catch (Exception e) {
-            throw new NotFoundException("User not found");
-        }
     }
 
     public User updateUser(User user) throws ValidationException {
@@ -44,12 +40,9 @@ public class UserService {
     }
 
     public void addFriend(Long id, Long friendId) {
-        if (users.getUser(id) != null && users.getUser(friendId) != null) {
-            friendship.addFriend(id, friendId);
-            log.info("Пользователь " + id + " добавил в друзья id " + friendId + ".");
-        } else {
-            throw new NotFoundException("User not found");
-        }
+        friendship.addFriend(id, friendId);
+        log.info("Пользователь " + id + " добавил в друзья id " + friendId + ".");
+
     }
 
     public void deleteFriend(Long id, Long friendId) {
