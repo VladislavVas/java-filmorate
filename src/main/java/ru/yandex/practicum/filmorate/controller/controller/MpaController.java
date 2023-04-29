@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.controller.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,23 +16,19 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/mpa")
+@RequiredArgsConstructor
 public class MpaController {
 
-    @Autowired
     private final MpaDaoImpl mpaDaoImpl;
 
-    public MpaController(MpaDaoImpl mpaDaoImpl) {
-        this.mpaDaoImpl = mpaDaoImpl;
-    }
-
     @GetMapping
-    public List<Mpa> getAll() {
-        return mpaDaoImpl.getAll();
+    public ResponseEntity<List<Mpa>> getAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(mpaDaoImpl.getAll());
     }
 
     @GetMapping("/{id}")
-    public Mpa get(@PathVariable int id) {
-        return mpaDaoImpl.get(id);
+    public ResponseEntity<Mpa> get(@PathVariable int id) {
+        return ResponseEntity.status(HttpStatus.OK).body(mpaDaoImpl.get(id));
     }
 
 }
