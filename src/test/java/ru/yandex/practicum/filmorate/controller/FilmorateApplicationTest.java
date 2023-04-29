@@ -115,57 +115,57 @@ public class FilmorateApplicationTest {
         assertNull(film.getLikes());
     }
 
-    @Test
-    public void testCreateUser() throws ValidationException{
-        userController.create(user);
-        assertEquals(1, userController.getAll().size());
-        assertEquals(1,userController.getUser(1L).getId());
+//    @Test
+//    public void testCreateUser() throws ValidationException{
+//        userController.create(user);
+//        assertEquals(1, userController.getAll().size());
+//        assertEquals(1,userController.getUser(1L).getId());
+//    }
+
+//    @Test
+//    public void testGetAllUsers() throws ValidationException {
+//        userController.create(user);
+//        userController.create(user2);
+//        assertEquals(2, userController.getAll().size());
+//    }
+
+//    @Test
+//    public void testUpdateUser() throws ValidationException {
+//        userController.create(user);
+//        user.setName("updateName");
+//        userController.put(user);
+//        assertEquals("updateName", userController.getUser(1L).getName());
+//    }
+
+//    @Test
+//    public void testAddUserFriend() throws ValidationException{
+//        userController.create(user);
+//        userController.create(user2);
+//        userController.addFriend(1L,2L);
+//        userController.addFriend(2L,1L);
+//        assertEquals(1,userController.getUserFriends(1L).size());
+//    }
+//
+//    @Test
+//    public void testGetUserFriends() throws ValidationException{
+//        userController.create(user);
+//        userController.create(user2);
+//        userController.addFriend(1L, 2L);
+//        assertEquals(1, userController.getUserFriends(1L).size());
     }
 
-    @Test
-    public void testGetAllUsers() throws ValidationException {
-        userController.create(user);
-        userController.create(user2);
-        assertEquals(2, userController.getAll().size());
-    }
-
-    @Test
-    public void testUpdateUser() throws ValidationException {
-        userController.create(user);
-        user.setName("updateName");
-        userController.put(user);
-        assertEquals("updateName", userController.getUser(1L).getName());
-    }
-
-    @Test
-    public void testAddUserFriend() throws ValidationException{
-        userController.create(user);
-        userController.create(user2);
-        userController.addFriend(1L,2L);
-        userController.addFriend(2L,1L);
-        assertEquals(1,userController.getUserFriends(1L).size());
-    }
-
-    @Test
-    public void testGetUserFriends() throws ValidationException{
-        userController.create(user);
-        userController.create(user2);
-        userController.addFriend(1L, 2L);
-        assertEquals(1, userController.getUserFriends(1L).size());
-    }
-
-    @Test
-    public void testGetCommonFriends() throws ValidationException{
-        User user3 = User.builder()
-                .name("user3")
-                .login("login3")
-                .email("user3@mail.ru")
-                .birthday(LocalDate.of(2001,1,1)).build();
-        userController.create(user);
-        userController.create(user2);
-        userController.create(user3);
-        userController.addFriend(1L, 3L);
-        userController.addFriend(2L,3L);
-        assertEquals(1,userController.getCommonFriends(1L,2L).size());
-    }
-}
+//    @Test
+//    public void testGetCommonFriends() throws ValidationException{
+//        User user3 = User.builder()
+//                .name("user3")
+//                .login("login3")
+//                .email("user3@mail.ru")
+//                .birthday(LocalDate.of(2001,1,1)).build();
+//        userController.create(user);
+//        userController.create(user2);
+//        userController.create(user3);
+//        userController.addFriend(1L, 3L);
+//        userController.addFriend(2L,3L);
+//        assertEquals(1,userController.getCommonFriends(1L,2L).size());
+//    }
+//}

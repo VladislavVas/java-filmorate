@@ -3,11 +3,12 @@ package ru.yandex.practicum.filmorate.controller.dal.mappers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import ru.yandex.practicum.filmorate.controller.model.User;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Slf4j
-public class  UserMapper implements RowMapper<User> {
+public class UserMapper implements RowMapper<User> {
     @Override
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         User user = User.builder()

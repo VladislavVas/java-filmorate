@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.dal.dao.FriendshipDao;
 import ru.yandex.practicum.filmorate.controller.dal.dao.UserDao;
+import ru.yandex.practicum.filmorate.controller.dal.util.Validator;
 import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.User;
@@ -19,16 +20,22 @@ public class UserService {
 
     private final UserDao users;
     private final FriendshipDao friendship;
+    private final Validator validator;
 
     public User createUser(User user) throws ValidationException {
         return users.createUser(user);
     }
 
     public User getUser(Long id) {
-        return users.getUser(id);
+        try {
+            return users.getUser(id);
+        } catch (Exception e) {
+            throw new NotFoundException("User not found");
+        }
     }
 
     public User updateUser(User user) throws ValidationException {
+        validator.userValidator(user);
         return users.updateUser(user);
     }
 
@@ -79,7 +86,6 @@ public class UserService {
             throw new NotFoundException("User not found");
         }
     }
-
 
 }
 

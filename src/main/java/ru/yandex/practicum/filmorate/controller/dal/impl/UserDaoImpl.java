@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller.dal.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.dal.dao.UserDao;
 import ru.yandex.practicum.filmorate.controller.dal.mappers.UserMapper;
 import ru.yandex.practicum.filmorate.controller.dal.util.Validator;
-import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.User;
 
@@ -18,7 +16,6 @@ import java.sql.PreparedStatement;
 import java.util.List;
 
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class UserDaoImpl implements UserDao {
@@ -33,7 +30,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<User> getAll() {
-        log.info("DB: Get all users");
         return jdbcTemplate.query(GET_ALL_USERS, new UserMapper());
     }
 
@@ -54,21 +50,14 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User updateUser(User user) throws ValidationException, NotFoundException {
-        validator.userValidator(user);
+    public User updateUser(User user) {
         jdbcTemplate.update(UPDATE_USER, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
-        log.info("DB: update user  id=" + user.getId());
         return getUser(user.getId());
     }
 
     @Override
-    public User getUser(Long id) throws NotFoundException {
-        try {
-            log.info("DB: get user id=" + id);
-            return jdbcTemplate.queryForObject(GET_USER, new UserMapper(), id);
-        } catch (Exception e) {
-            throw new NotFoundException("User not found");
-        }
+    public User getUser(Long id) {
+        return jdbcTemplate.queryForObject(GET_USER, new UserMapper(), id);
     }
 
 }
