@@ -20,7 +20,6 @@ import java.util.List;
 public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final Validator validator;
 
     private static final String GET_USER = "SELECT * FROM USERS WHERE USER_ID = ?";
     private static final String CREATE_USER = "INSERT INTO USERS(EMAIL, LOGIN, NAME, BIRTHDAY) values (?, ?, ?, ?)";
@@ -33,8 +32,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User createUser(User user) {
-        validator.userValidator(user);
+    public User create(User user) {
+        Validator.userValidator(user);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(CREATE_USER, new String[]{"user_id"});
@@ -49,13 +48,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User updateUser(User user) {
+    public User update(User user) {
         jdbcTemplate.update(UPDATE_USER, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
-        return getUser(user.getId());
+        return get(user.getId());
     }
 
     @Override
-    public User getUser(Long id) {
+    public User get(Long id) {
         return jdbcTemplate.queryForObject(GET_USER, new UserMapper(), id);
     }
 

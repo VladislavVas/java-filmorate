@@ -13,12 +13,8 @@ public interface FilmDao {
 
     Film create(Film film) throws ValidationException;
 
-    Film updateFilm(Film film) throws ValidationException;
+    Film update(Film film) throws ValidationException;
 
-    Film getFilm(Long id);
-
-    void deleteFilm(Long id);
-
-    Film setLikes(Film film);
+    Film get(Long id);
 
 }

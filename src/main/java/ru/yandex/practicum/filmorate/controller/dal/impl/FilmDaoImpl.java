@@ -1,22 +1,20 @@
 package ru.yandex.practicum.filmorate.controller.dal.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.dal.dao.FilmDao;
-import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
-import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.dal.mappers.FilmMapper;
 import ru.yandex.practicum.filmorate.controller.dal.mappers.GenreMapper;
 import ru.yandex.practicum.filmorate.controller.dal.mappers.MpaMapper;
+import ru.yandex.practicum.filmorate.controller.dal.util.Validator;
+import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.Film;
 import ru.yandex.practicum.filmorate.controller.model.Genres;
 import ru.yandex.practicum.filmorate.controller.model.Mpa;
-import ru.yandex.practicum.filmorate.controller.dal.util.Validator;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -28,16 +26,17 @@ import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class FilmDaoImpl implements FilmDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final Validator validator;
 
-    @Autowired
-    public FilmDaoImpl(JdbcTemplate jdbcTemplate, Validator validator) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.validator = validator;
-    }
+    private final String GET = "SELECT * FROM FILMS WHERE FILM_ID = ?";
+    private final String GET_ALL = "SELECT * FROM FILMS";
+    private final String GET_POPULAR = "select * from FILMS order by RATE limit  ?";
+    private final String CREATE = "INSERT INTO FILMS(FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATE) values (?, ?, ?, ?, ?)";
+    private final String UPDATE = "UPDATE FILMS SET FILM_NAME=?, DESCRIPTION=?, RELEASE_DATE=?, DURATION=? WHERE FILM_ID=?";
+
 
     private static long mapRowToLong(ResultSet resultSet, int rowNum) throws SQLException {
         return resultSet.getLong(1);
@@ -45,28 +44,25 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public List<Film> getAll() {
-        String sql = "SELECT * FROM FILMS";
-        List<Film> filmsFromDb = jdbcTemplate.query(sql, new FilmMapper());
-        for (Film film : filmsFromDb) {
+        List<Film> films = jdbcTemplate.query(GET_ALL, new FilmMapper());
+        for (Film film : films) {
             getMpa(film);
             getGenre(film);
         }
-        return filmsFromDb;
+        return films;
     }
 
     @Override
     public List<Film> getPopular(Integer count) {
-        String sql = "select * from FILMS order by RATE limit  ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> getFilm(rs.getLong(1)), count);
+        return jdbcTemplate.query(GET_POPULAR, (rs, rowNum) -> get(rs.getLong(1)), count);
     }
 
     @Override
     public Film create(Film film) throws ValidationException {
-        validator.filmValidator(film);
+        Validator.filmValidator(film);
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        final String sql = "INSERT INTO FILMS(FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATE) values (?, ?, ?, ?, ?)";
         jdbcTemplate.update(connection -> {
-            PreparedStatement stmt = connection.prepareStatement(sql, new String[]{"film_id"});
+            PreparedStatement stmt = connection.prepareStatement(CREATE, new String[]{"film_id"});
             stmt.setString(1, film.getName());
             stmt.setString(2, film.getDescription());
             stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
@@ -79,11 +75,9 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public Film updateFilm(Film film) throws ValidationException {
-        testId(film.getId());
-        validator.filmValidator(film);
-        String sql = "UPDATE FILMS SET FILM_NAME=?, DESCRIPTION=?, RELEASE_DATE=?, DURATION=? WHERE FILM_ID=?";
-        jdbcTemplate.update(sql, film.getName(),
+    public Film update(Film film) throws ValidationException {
+        Validator.filmValidator(film);
+        jdbcTemplate.update(UPDATE, film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
@@ -92,31 +86,12 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public Film getFilm(Long id) {
-        testId(id);
-        String sql = "SELECT * FROM FILMS WHERE FILM_ID = ?";
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
-        if (userRows.next()) {
-            Film film = jdbcTemplate.queryForObject(sql, new FilmMapper(), id);
-            getGenre(film);
-            getMpa(film);
-            setLikes(film);
-            return film;
-        } else {
-            throw new NotFoundException("Такого фильма не существует");
-        }
-    }
-
-    @Override
-    public void deleteFilm(Long id) {
-        testId(id);
-        String sql = "DELETE FROM FILMS WHERE FILM_ID = ?";
-        SqlRowSet userRows = jdbcTemplate.queryForRowSet(sql, id);
-        if (userRows.next()) {
-            jdbcTemplate.update(sql, id);
-        } else {
-            throw new NotFoundException("Такого фильма не существует");
-        }
+    public Film get(Long id) {
+        Film film = jdbcTemplate.queryForObject(GET, new FilmMapper(), id);
+        getGenre(film);
+        getMpa(film);
+        setLikes(film);
+        return film;
     }
 
     private void getMpa(Film film) {
@@ -126,11 +101,8 @@ public class FilmDaoImpl implements FilmDao {
                 "FROM FILM_MPA AS FR\n" +
                 "LEFT JOIN MPA AS R ON R.MPA_ID = FR.MPA_ID\n" +
                 "WHERE FILM_ID = ?";
-        SqlRowSet mpaRows = jdbcTemplate.queryForRowSet(sql, film.getId());
-        if (mpaRows.next()){
-            Mpa mpa = jdbcTemplate.queryForObject(sql, new MpaMapper(), film.getId());
-            film.setMpa(mpa);
-        }
+        Mpa mpa = jdbcTemplate.queryForObject(sql, new MpaMapper(), film.getId());
+        film.setMpa(mpa);
     }
 
     private void getGenre(Film film) {
@@ -144,26 +116,13 @@ public class FilmDaoImpl implements FilmDao {
         film.setGenres(genres);
     }
 
-    private void testId(long id) {
-        String sql = "SELECT * FROM FILMS WHERE FILM_ID = ?";
-        Film film = jdbcTemplate.query(
-                        sql,
-                        new FilmMapper(),
-                        id)
-                .stream()
-                .findAny()
-                .orElseThrow(() -> new NotFoundException("Фильма с id " + id + " нет в БД."));
-    }
-
-    @Override
-    public Film setLikes(Film film) {
-        long filmId = film.getId();
+    private void setLikes(Film film) {
         String sql = "SELECT COUNT(USER_ID)\n" +
                 "FROM LIKES\n" +
                 "WHERE FILM_ID = ?";
-        List<Long> likes = jdbcTemplate.query(sql, FilmDaoImpl::mapRowToLong, filmId);
+        List<Long> likes = jdbcTemplate.query(sql, FilmDaoImpl::mapRowToLong, film.getId());
         film.setLikes(new HashSet<>(likes));
-        return film;
     }
+
 }
 

@@ -20,7 +20,7 @@ public class FriendshipDaoImpl implements FriendshipDao {
 
     private final String ADD_FRIEND = "INSERT INTO FRIENDSHIP (USER_ID, FRIEND_ID) VALUES (?, ?)";
 
-    private final String DELETE_FRIEND = "DELETE FROM FRIENDSHIP WHERE USER_ID = ? AND FRIEND_ID = ?";
+    private final String DELETE = "DELETE FROM FRIENDSHIP WHERE USER_ID = ? AND FRIEND_ID = ?";
 
     @Override
     public List<Long> getFriendsIds(Long id) {
@@ -34,7 +34,7 @@ public class FriendshipDaoImpl implements FriendshipDao {
 
     @Override
     public void deleteFriend(Long userId, Long friendId) {
-        jdbcTemplate.update(DELETE_FRIEND, userId, friendId);
+        jdbcTemplate.update(DELETE, userId, friendId);
     }
 
 }

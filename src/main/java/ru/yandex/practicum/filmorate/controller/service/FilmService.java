@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.dal.dao.FilmDao;
-import ru.yandex.practicum.filmorate.controller.dal.dao.UserDao;
 import ru.yandex.practicum.filmorate.controller.dal.impl.GenreDaoImpl;
 import ru.yandex.practicum.filmorate.controller.dal.impl.LikeDaoImpl;
 import ru.yandex.practicum.filmorate.controller.dal.impl.MpaDaoImpl;
@@ -19,7 +18,6 @@ import java.util.List;
 public class FilmService {
 
     private final FilmDao films;
-    private final UserDao userDAO;
     private final GenreDaoImpl genres;
     private final MpaDaoImpl mpas;
     private final LikeDaoImpl likes;
@@ -30,20 +28,15 @@ public class FilmService {
     }
 
     public Film getFilmById(Long filmId) {
-        return films.getFilm(filmId);
+        return films.get(filmId);
     }
 
-    public void deleteFilmById(Long filmId) {
-        films.deleteFilm(filmId);
-    }
-
-    public List<Film> getPopular (Integer count){
+    public List<Film> getPopular(Integer count) {
         return films.getPopular(count);
     }
 
     public void addLike(Long userId, Long filmId) {
         likes.addLike(userId, filmId);
-        log.info("Фильм id " + filmId + " получил лайк" + "пользователя " + userId + ".");
     }
 
 
@@ -51,18 +44,18 @@ public class FilmService {
         likes.deleteLike(userId, filmId);
     }
 
-
     public Film updateFilm(Film film) throws ValidationException {
-        films.updateFilm(film);
+        films.update(film);
         genres.setFilmGenre(film);
-        mpas.setFilmMpa(film);
-        return films.getFilm(film.getId());
+        mpas.setMpa(film);
+        return films.get(film.getId());
     }
 
     public Film createFilm(Film film) throws ValidationException {
         films.create(film);
         genres.setFilmGenre(film);
-        mpas.setFilmMpa(film);
-        return films.getFilm(film.getId());
+        mpas.setMpa(film);
+        return films.get(film.getId());
     }
+
 }

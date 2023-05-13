@@ -23,16 +23,16 @@ public class UserService {
 
     public User createUser(User user) throws ValidationException {
         validator.userValidator(user);
-        return users.createUser(user);
+        return users.create(user);
     }
 
     public User getUser(Long id) {
-        return users.getUser(id);
+        return users.get(id);
     }
 
     public User updateUser(User user) throws ValidationException {
         validator.userValidator(user);
-        return users.updateUser(user);
+        return users.update(user);
     }
 
     public List<User> getAllUsers() {
@@ -40,8 +40,8 @@ public class UserService {
     }
 
     public void addFriend(Long id, Long friendId) {
-        users.getUser(id);
-        users.getUser(friendId);
+        users.get(id);
+        users.get(friendId);
         friendship.addFriend(id, friendId);
     }
 
@@ -52,7 +52,7 @@ public class UserService {
     public List<User> getAllUserFriends(Long id) {
         return friendship.getFriendsIds(id)
                 .stream()
-                .map(users::getUser)
+                .map(users::get)
                 .collect(Collectors.toList());
     }
 

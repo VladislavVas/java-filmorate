@@ -20,9 +20,9 @@ public class GenreDaoImpl implements GenreDao {
 
     private final String GET_ALL = "SELECT * FROM GENRE";
 
-    private final String FIND_GENRE_BY_ID = "SELECT * FROM GENRE WHERE GENRE_ID = ?";
+    private final String GET = "SELECT * FROM GENRE WHERE GENRE_ID = ?";
 
-    private final String DELETE_GENRE_BY_ID = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?";
+    private final String DELETE_BY_ID = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?";
 
     @Override
     public List<Genres> getAll() {
@@ -31,13 +31,12 @@ public class GenreDaoImpl implements GenreDao {
 
     @Override
     public Genres get(int id) {
-        return jdbcTemplate.queryForObject(FIND_GENRE_BY_ID, new GenreMapper(), id);
+        return jdbcTemplate.queryForObject(GET, new GenreMapper(), id);
     }
 
     public void setFilmGenre(Film film) {
         List<Genres> genresList = film.getGenres();
         cleanTable(film.getId());
-        // List<Genres> genresList = genresSet.stream().collect(Collectors.toList());
         if (genresList != null) {
             for (Genres genres : genresList) {
                 String sql = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
@@ -47,7 +46,7 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     private void cleanTable(Long id) {
-        jdbcTemplate.update(DELETE_GENRE_BY_ID, id);
+        jdbcTemplate.update(DELETE_BY_ID, id);
     }
 }
 

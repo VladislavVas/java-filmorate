@@ -63,10 +63,4 @@ public class FilmController {
         return ResponseEntity.status(HttpStatus.OK).body(filmService.getPopular(count));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFilmById(@PathVariable Long id) {
-        filmService.deleteFilmById(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
 }

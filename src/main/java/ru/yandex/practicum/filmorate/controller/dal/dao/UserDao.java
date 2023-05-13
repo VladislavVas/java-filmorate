@@ -9,10 +9,10 @@ public interface UserDao {
 
     List<User> getAll();
 
-    User createUser(User user) throws ValidationException;
+    User create(User user) throws ValidationException;
 
-    User updateUser(User user) throws ValidationException;
+    User update(User user) throws ValidationException;
 
-    User getUser(Long id);
+    User get(Long id);
 
 }
