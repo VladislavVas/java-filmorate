@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.dal.dao.UserDao;
 import ru.yandex.practicum.filmorate.controller.dal.mappers.UserMapper;
 import ru.yandex.practicum.filmorate.controller.dal.util.Validator;
-import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.User;
 
 import java.sql.Date;
@@ -34,7 +33,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User createUser(User user) throws ValidationException {
+    public User createUser(User user) {
         validator.userValidator(user);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {

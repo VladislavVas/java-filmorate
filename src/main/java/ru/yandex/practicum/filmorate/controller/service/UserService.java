@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.controller.dal.dao.FriendshipDao;
 import ru.yandex.practicum.filmorate.controller.dal.dao.UserDao;
 import ru.yandex.practicum.filmorate.controller.dal.util.Validator;
-import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.User;
 
@@ -23,11 +22,12 @@ public class UserService {
     private final Validator validator;
 
     public User createUser(User user) throws ValidationException {
+        validator.userValidator(user);
         return users.createUser(user);
     }
 
     public User getUser(Long id) {
-            return users.getUser(id);
+        return users.getUser(id);
     }
 
     public User updateUser(User user) throws ValidationException {
@@ -40,44 +40,26 @@ public class UserService {
     }
 
     public void addFriend(Long id, Long friendId) {
+        users.getUser(id);
+        users.getUser(friendId);
         friendship.addFriend(id, friendId);
-        log.info("Пользователь " + id + " добавил в друзья id " + friendId + ".");
-
     }
 
     public void deleteFriend(Long id, Long friendId) {
-        if (users.getUser(id) != null && users.getUser(friendId) != null) {
-            friendship.deleteFriend(id, friendId);
-            log.info("Пользователь " + id + " удалил из друзей id " + friendId + ".");
-        } else {
-            throw new NotFoundException("User not found");
-        }
+        friendship.deleteFriend(id, friendId);
     }
 
     public List<User> getAllUserFriends(Long id) {
-        if (users.getUser(id) != null) {
-            log.info("Запрос друзей пользователя id " + id + ".");
-            return friendship.getFriendsIds(id)
-                    .stream()
-                    .map(users::getUser)
-                    .collect(Collectors.toList());
-        } else {
-            log.info("Запрос друзей несуществующего пользователя.");
-            throw new NotFoundException("User not found");
-        }
+        return friendship.getFriendsIds(id)
+                .stream()
+                .map(users::getUser)
+                .collect(Collectors.toList());
     }
 
     public List<User> getCommonFriends(Long firstId, Long otherId) {
-        if (users.getUser(firstId) != null && users.getUser(otherId) != null) {
-            log.info("Запрос общих друзей пользователей id " + firstId + " и id " +
-                    otherId + ".");
-            List<User> user = getAllUserFriends(firstId);
-            List<User> otherUser = getAllUserFriends(otherId);
-            return user.stream().filter(otherUser::contains).collect(Collectors.toList());
-        } else {
-            log.info("Запрос общих друзей несуществующего пользователя.");
-            throw new NotFoundException("User not found");
-        }
+        List<User> user = getAllUserFriends(firstId);
+        List<User> otherUser = getAllUserFriends(otherId);
+        return user.stream().filter(otherUser::contains).collect(Collectors.toList());
     }
 
 }

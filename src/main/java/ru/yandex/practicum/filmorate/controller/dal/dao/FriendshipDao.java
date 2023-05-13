@@ -9,4 +9,5 @@ public interface FriendshipDao {
     void addFriend(Long user_id, Long friend_id);
 
     void deleteFriend(Long user_id, Long friend_id);
+
 }

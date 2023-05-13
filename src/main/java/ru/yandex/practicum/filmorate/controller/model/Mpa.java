@@ -1,16 +1,17 @@
 package ru.yandex.practicum.filmorate.controller.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Setter;
 
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 
 @Data
 @Builder
 public class Mpa {
-    @Min(1)
+
+    @Positive
     private int id;
+
     private String name;
+
 }

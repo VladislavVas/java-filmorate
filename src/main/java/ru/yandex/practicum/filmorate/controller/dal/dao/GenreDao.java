@@ -2,10 +2,12 @@ package ru.yandex.practicum.filmorate.controller.dal.dao;
 
 import ru.yandex.practicum.filmorate.controller.model.Genres;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface GenreDao {
 
-    Collection<Genres> getAll();
+    List<Genres> getAll();
+
     Genres get(int id);
+
 }
