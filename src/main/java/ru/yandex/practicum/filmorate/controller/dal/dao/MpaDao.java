@@ -11,6 +11,6 @@ public interface MpaDao {
 
     Mpa get(int id);
 
-    Film setMpa(Film film);
+    Film saveMpa(Film film);
 
 }

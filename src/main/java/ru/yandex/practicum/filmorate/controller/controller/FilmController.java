@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.controller.exeption.ValidationException;
 import ru.yandex.practicum.filmorate.controller.model.Film;
 import ru.yandex.practicum.filmorate.controller.service.FilmService;
@@ -45,11 +46,10 @@ public class FilmController {
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public ResponseEntity<Void> deleteLike(
+    public void deleteLike(
             @PathVariable Long id,
             @PathVariable Long userId) {
         filmService.deleteLike(id, userId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/{id}")

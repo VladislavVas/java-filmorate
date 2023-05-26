@@ -34,7 +34,7 @@ public class MpaDaoImpl implements MpaDao {
     }
 
     @Override
-    public Film setMpa(Film film) {
+    public Film saveMpa(Film film) {
         cleanTable(film.getId());
         film.getMpa().getId();
         if (film.getMpa() != null && film.getMpa().getId() != 0) {

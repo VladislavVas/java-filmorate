@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.dal.dao.FriendshipDao;
+import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
 
 import java.util.List;
 
@@ -31,7 +32,10 @@ public class FriendshipDaoImpl implements FriendshipDao {
 
     @Override
     public void deleteFriend(Long userId, Long friendId) {
-        jdbcTemplate.update(DELETE, userId, friendId);
+        int rows = jdbcTemplate.update(DELETE, userId, friendId);
+        if (rows == 0) {
+            throw new NotFoundException("Friendship not found.");
+        }
     }
 
 }

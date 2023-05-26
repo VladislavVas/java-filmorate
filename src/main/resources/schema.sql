@@ -80,13 +80,13 @@ CREATE TABLE IF NOT EXISTS friendship
 
 CREATE TABLE IF NOT EXISTS likes
 (
-    film_id INTEGER NOT NULL
-        REFERENCES films
-        REFERENCES films,
-    user_id INTEGER NOT NULL
-        REFERENCES users
-        REFERENCES users,
-    PRIMARY KEY (film_id, user_id)
+    film_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    PRIMARY KEY (film_id, user_id),
+    CONSTRAINT films_film_id_fk
+        FOREIGN KEY (film_id) REFERENCES films,
+    CONSTRAINT users_user_id_fk
+        FOREIGN KEY (user_id) REFERENCES users
 );
 
 MERGE INTO mpa KEY (mpa_id)
@@ -100,6 +100,6 @@ MERGE INTO genre KEY (genre_id)
     VALUES (1, 'Комедия'),
            (2, 'Драма'),
            (3, 'Мультфильм'),
-           (4, 'Ужасы'),
-           (5, 'Триллер'),
-           (6, 'Детектив');
+           (4, 'Триллер'),
+           (5, 'Документальный'),
+           (6, 'Боевик');

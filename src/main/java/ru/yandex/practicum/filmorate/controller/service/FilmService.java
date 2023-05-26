@@ -41,21 +41,21 @@ public class FilmService {
 
 
     public void deleteLike(Long filmId, Long userId) {
-        likes.deleteLike(userId, filmId);
+        likes.deleteLike(filmId, userId);
     }
 
     public Film updateFilm(Film film) throws ValidationException {
         films.update(film);
         genres.saveGenre(film);
-        mpas.setMpa(film);
-        return films.get(film.getId());
+        mpas.saveMpa(film);
+        return getFilmById(film.getId());
     }
 
     public Film createFilm(Film film) throws ValidationException {
         films.create(film);
         genres.saveGenre(film);
-        mpas.setMpa(film);
-        return films.get(film.getId());
+        mpas.saveMpa(film);
+        return getFilmById(film.getId());
     }
 
 }

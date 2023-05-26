@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.dal.dao.LikeDao;
+import ru.yandex.practicum.filmorate.controller.exeption.NotFoundException;
 
 @Component
 @RequiredArgsConstructor
@@ -26,7 +27,10 @@ public class LikeDaoImpl implements LikeDao {
 
     @Override
     public void deleteLike(Long filmId, Long userId) {
-        jdbcTemplate.update(DELETE_LIKE, filmId, userId);
+        int rows = jdbcTemplate.update(DELETE_LIKE, filmId, userId);
+        if (rows == 0) {
+            throw new NotFoundException("Like not found.");
+        }
         setRate(filmId);
     }
 
