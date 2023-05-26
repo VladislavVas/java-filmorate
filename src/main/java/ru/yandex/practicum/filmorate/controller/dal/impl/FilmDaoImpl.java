@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller.dal.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -24,18 +23,17 @@ import java.util.HashSet;
 import java.util.List;
 
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FilmDaoImpl implements FilmDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final String GET = "SELECT * FROM FILMS WHERE FILM_ID = ?";
-    private final String GET_ALL = "SELECT * FROM FILMS";
-    private final String GET_POPULAR = "select * from FILMS order by RATE limit  ?";
-    private final String CREATE = "INSERT INTO FILMS(FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATE) values (?, ?, ?, ?, ?)";
-    private final String UPDATE = "UPDATE FILMS SET FILM_NAME=?, DESCRIPTION=?, RELEASE_DATE=?, DURATION=? WHERE FILM_ID=?";
+    private static final String GET = "SELECT * FROM FILMS WHERE FILM_ID = ?";
+    private static final String GET_ALL = "SELECT * FROM FILMS";
+    private static final String GET_POPULAR = "select * from FILMS order by RATE limit  ?";
+    private static final String CREATE = "INSERT INTO FILMS(FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATE) values (?, ?, ?, ?, ?)";
+    private static final String UPDATE = "UPDATE FILMS SET FILM_NAME=?, DESCRIPTION=?, RELEASE_DATE=?, DURATION=? WHERE FILM_ID=?";
 
 
     private static long mapRowToLong(ResultSet resultSet, int rowNum) throws SQLException {
@@ -77,12 +75,13 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public Film update(Film film) throws ValidationException {
         Validator.filmValidator(film);
-        jdbcTemplate.update(UPDATE, film.getName(),
+        jdbcTemplate.update(UPDATE,
+                film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
                 film.getId());
-        return film;
+        return get(film.getId());
     }
 
     @Override

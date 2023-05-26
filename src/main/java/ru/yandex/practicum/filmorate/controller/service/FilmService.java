@@ -46,14 +46,14 @@ public class FilmService {
 
     public Film updateFilm(Film film) throws ValidationException {
         films.update(film);
-        genres.setFilmGenre(film);
+        genres.saveGenre(film);
         mpas.setMpa(film);
         return films.get(film.getId());
     }
 
     public Film createFilm(Film film) throws ValidationException {
         films.create(film);
-        genres.setFilmGenre(film);
+        genres.saveGenre(film);
         mpas.setMpa(film);
         return films.get(film.getId());
     }

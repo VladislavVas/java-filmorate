@@ -1,13 +1,12 @@
 package ru.yandex.practicum.filmorate.controller.dal.mappers;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import ru.yandex.practicum.filmorate.controller.model.Friends;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@Slf4j
+
 public class FriendsMapper implements RowMapper<Friends> {
 
     @Override
@@ -17,7 +16,6 @@ public class FriendsMapper implements RowMapper<Friends> {
                 .friendId(rs.getLong(2))
                 .status(rs.getBoolean(3))
                 .build();
-        log.info("Выгрузка списка друзей из БД.");
         return friends;
     }
 }

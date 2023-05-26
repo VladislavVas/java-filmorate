@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller.dal.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.dal.dao.MpaDao;
@@ -13,17 +12,16 @@ import ru.yandex.practicum.filmorate.controller.model.Mpa;
 import java.util.List;
 
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class MpaDaoImpl implements MpaDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final String GET_MPA = "SELECT * FROM MPA WHERE MPA_ID = ?";
-    private final String GET_ALL_MPA = "SELECT * FROM MPA";
-
-    private final String SET_MPA = "INSERT INTO FILM_MPA (FILM_ID, MPA_ID) VALUES (?, ?)";
+    private static final String GET_MPA = "SELECT * FROM mpa WHERE mpa_id = ?";
+    private static final String GET_ALL_MPA = "SELECT * FROM mpa";
+    private static final String SET_MPA = "INSERT INTO film_mpa (film_id, mpa_id) VALUES (?, ?)";
+    private static final String DELETE_MPA = "DELETE FROM FILM_MPA WHERE FILM_ID = ?";
 
     @Override
     public List<Mpa> getAll() {
@@ -46,8 +44,8 @@ public class MpaDaoImpl implements MpaDao {
     }
 
     private void cleanTable(Long id) {
-        String sql = "DELETE FROM FILM_MPA WHERE FILM_ID = ?";
-        jdbcTemplate.update(sql, id);
+        jdbcTemplate.update(DELETE_MPA, id);
     }
+
 }
 

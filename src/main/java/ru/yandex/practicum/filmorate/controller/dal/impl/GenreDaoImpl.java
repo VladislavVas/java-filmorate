@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.controller.dal.impl;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.controller.dal.dao.GenreDao;
@@ -11,18 +10,18 @@ import ru.yandex.practicum.filmorate.controller.model.Genres;
 
 import java.util.List;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GenreDaoImpl implements GenreDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final String GET_ALL = "SELECT * FROM GENRE";
+    private static final String GET_ALL = "SELECT * FROM genre";
 
-    private final String GET = "SELECT * FROM GENRE WHERE GENRE_ID = ?";
+    private static final String GET = "SELECT * FROM genre WHERE genre_id = ?";
 
-    private final String DELETE_BY_ID = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?";
+    private static final String DELETE_BY_ID = "DELETE FROM film_genre WHERE film_id = ?";
+    private static final String SAVE_GENRE = "INSERT INTO film_genre (film_id, genre_id) VALUES (?, ?)";
 
     @Override
     public List<Genres> getAll() {
@@ -34,13 +33,13 @@ public class GenreDaoImpl implements GenreDao {
         return jdbcTemplate.queryForObject(GET, new GenreMapper(), id);
     }
 
-    public void setFilmGenre(Film film) {
+    @Override
+    public void saveGenre(Film film) {
         List<Genres> genresList = film.getGenres();
         cleanTable(film.getId());
         if (genresList != null) {
             for (Genres genres : genresList) {
-                String sql = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
-                jdbcTemplate.update(sql, film.getId(), genres.getId());
+                jdbcTemplate.update(SAVE_GENRE, film.getId(), genres.getId());
             }
         }
     }

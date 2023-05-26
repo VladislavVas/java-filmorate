@@ -1,102 +1,102 @@
-drop table FILM_MPA;
-drop table MPA;
-drop table FILM_GENRE;
-drop table GENRE;
-drop table LIKES;
-drop table FRIENDSHIP;
-drop table FILMS;
-drop table USERS;
+DROP TABLE film_mpa;
+DROP TABLE mpa;
+DROP TABLE film_genre;
+DROP TABLE genre;
+DROP TABLE likes;
+DROP TABLE friendship;
+DROP TABLE films;
+DROP TABLE users;
 
-create table if not exists FILMS
+CREATE TABLE IF NOT EXISTS films
 (
-    FILM_ID      INTEGER auto_increment,
-    FILM_NAME    CHARACTER VARYING(50) not null,
-    DESCRIPTION  CHARACTER VARYING(200),
-    RELEASE_DATE DATE                  not null,
-    DURATION     INTEGER,
-    RATE         INTEGER,
-    constraint FILMS_PK
-        primary key (FILM_ID)
+    film_id      INTEGER AUTO_INCREMENT,
+    film_name    CHARACTER VARYING(50) NOT NULL,
+    description  CHARACTER VARYING(200),
+    release_date DATE                  NOT NULL,
+    duration     INTEGER,
+    rate         INTEGER,
+    CONSTRAINT films_pk
+        PRIMARY KEY (film_id)
 );
 
-create table if not exists GENRE
+CREATE TABLE IF NOT EXISTS genre
 (
-    GENRE_ID   INTEGER auto_increment
-        constraint GENRE_PK
-            unique,
-    GENRE_NAME CHARACTER VARYING(20) default NULL
+    genre_id   INTEGER AUTO_INCREMENT
+        CONSTRAINT genre_pk
+            UNIQUE,
+    genre_name CHARACTER VARYING(20) DEFAULT NULL
 );
 
-create table if not exists MPA
+CREATE TABLE IF NOT EXISTS mpa
 (
-    MPA_ID   INTEGER auto_increment,
-    MPA_NAME CHARACTER VARYING(10),
-    constraint RATE_PK
-        primary key (MPA_ID)
+    mpa_id   INTEGER AUTO_INCREMENT,
+    mpa_name CHARACTER VARYING(10),
+    CONSTRAINT rate_pk
+        PRIMARY KEY (mpa_id)
 );
 
-create table if not exists FILM_GENRE
+CREATE TABLE IF NOT EXISTS film_genre
 (
-    FILM_ID  INTEGER,
-    GENRE_ID INTEGER,
-    constraint FILM_GENRE_FILMS_FILM_ID_FK
-        foreign key (FILM_ID) references FILMS,
-    constraint FILM_GENRE_GENRE_GENRE_ID_FK
-        foreign key (GENRE_ID) references GENRE (GENRE_ID)
+    film_id  INTEGER,
+    genre_id INTEGER,
+    CONSTRAINT film_genre_films_film_id_fk
+        FOREIGN KEY (film_id) REFERENCES films,
+    CONSTRAINT film_genre_genre_genre_id_fk
+        FOREIGN KEY (genre_id) REFERENCES genre (genre_id)
 );
 
-create table if not exists FILM_MPA
+CREATE TABLE IF NOT EXISTS film_mpa
 (
-    FILM_ID INTEGER,
-    MPA_ID  INTEGER auto_increment,
-    constraint FILM_RATE_FILMS_FILM_ID_FK
-        foreign key (FILM_ID) references FILMS,
-    constraint FILM_RATE_RATE_RATE_ID_FK
-        foreign key (MPA_ID) references MPA
+    film_id INTEGER,
+    mpa_id  INTEGER auto_increment,
+    CONSTRAINT film_rate_films_film_id_fk
+        FOREIGN KEY (film_id) REFERENCES films,
+    CONSTRAINT film_rate_rate_rate_id_fk
+        FOREIGN KEY (mpa_id) REFERENCES mpa
 );
 
 
-create table if not exists USERS
+CREATE TABLE IF NOT EXISTS users
 (
-    USER_ID  INTEGER auto_increment,
-    EMAIL    CHARACTER VARYING(30) not null,
-    LOGIN    CHARACTER VARYING(20) not null,
-    NAME     CHARACTER VARYING(50),
-    BIRTHDAY DATE                  not null,
-    constraint USERS_PK
-        primary key (USER_ID)
+    user_id  INTEGER AUTO_INCREMENT,
+    email    CHARACTER VARYING(30) NOT NULL,
+    login    CHARACTER VARYING(20) NOT NULL,
+    name     CHARACTER VARYING(50),
+    birthday DATE                  NOT NULL,
+    CONSTRAINT users_pk
+        PRIMARY KEY (user_id)
 );
 
-create table if not exists FRIENDSHIP
+CREATE TABLE IF NOT EXISTS friendship
 (
-    USER_ID   INTEGER not null,
-    FRIEND_ID INTEGER not null,
-    STATUS    BOOLEAN default FALSE,
-    constraint FRIENDSHIP_USERS_USER_ID_FK
-        foreign key (FRIEND_ID) references USERS,
-    constraint FRIENDSHIP_USERS_USER_ID_USER_ID_FK
-        foreign key (USER_ID) references USERS
+    user_id   INTEGER NOT NULL,
+    friend_id INTEGER NOT NULL,
+    status    BOOLEAN DEFAULT FALSE,
+    CONSTRAINT friendship_users_user_id_fk
+        FOREIGN KEY (friend_id) REFERENCES users,
+    CONSTRAINT friendship_users_user_id_user_id_fk
+        FOREIGN KEY (user_id) REFERENCES users
 );
 
-create table if not exists LIKES
+CREATE TABLE IF NOT EXISTS likes
 (
-    FILM_ID INTEGER not null
-        references FILMs
-        references FILMs,
-    USER_ID INTEGER not null
-        references USERs
-        references USERs,
-    primary key (FILM_ID, USER_ID)
+    film_id INTEGER NOT NULL
+        REFERENCES films
+        REFERENCES films,
+    user_id INTEGER NOT NULL
+        REFERENCES users
+        REFERENCES users,
+    PRIMARY KEY (film_id, user_id)
 );
 
-MERGE INTO MPA key (MPA_ID)
+MERGE INTO mpa KEY (mpa_id)
     VALUES (1, 'G'),
            (2, 'PG'),
            (3, 'PG-13'),
            (4, 'R'),
            (5, 'NC-17');
 
-MERGE INTO GENRE key (GENRE_ID)
+MERGE INTO genre KEY (genre_id)
     VALUES (1, 'Комедия'),
            (2, 'Драма'),
            (3, 'Мультфильм'),

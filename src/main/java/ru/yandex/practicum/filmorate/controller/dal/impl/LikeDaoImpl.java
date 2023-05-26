@@ -11,11 +11,11 @@ public class LikeDaoImpl implements LikeDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final String ADD_LIKE = "INSERT INTO LIKES (FILM_ID, USER_ID) VALUES(?,?)";
+    private static final String ADD_LIKE = "INSERT INTO LIKES (FILM_ID, USER_ID) VALUES(?,?)";
 
-    private final String DELETE_LIKE = "DELETE  FROM LIKES WHERE FILM_ID = ? AND USER_ID = ?";
+    private static final String DELETE_LIKE = "DELETE  FROM LIKES WHERE FILM_ID = ? AND USER_ID = ?";
 
-    private final String SET_RATE = "UPDATE FILMS AS F SET RATE = (SELECT COUNT(L.USER_ID)\n" +
+    private static final String SET_RATE = "UPDATE FILMS AS F SET RATE = (SELECT COUNT(L.USER_ID)\n" +
             "FROM LIKES AS L WHERE L.FILM_ID = F.FILM_ID) WHERE FILM_ID = ?";
 
     @Override
