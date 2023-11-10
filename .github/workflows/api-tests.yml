@@ -6,10 +6,3 @@ on:
 jobs:
   build:
     uses: yandex-praktikum/java-filmorate/.github/workflows/api-tests.yml@ci
-
-      - name: Waiting for application is up
-        run: /tmp/wait-for-it.sh -t 120 localhost:8080 -- echo "application is up"
-
-      - name: Run POSTMAN tests
-        run: |
-          newman run ./tests/postman/sprint.json -r cli
