@@ -52,7 +52,7 @@ public class UserDaoImpl implements UserDao {
         jdbcTemplate.update(UPDATE_USER,
                 user.getEmail(),
                 user.getLogin(),
-                user.getName(),
+                user.getName(),пше ы
                 user.getBirthday(),
                 user.getId());
         return get(user.getId());
@@ -64,3 +64,5 @@ public class UserDaoImpl implements UserDao {
     }
 
 }
+
+// тесты заработали?
